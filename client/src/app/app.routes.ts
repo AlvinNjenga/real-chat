@@ -1,8 +1,13 @@
 import { Routes } from '@angular/router';
 import { Login } from './login/login';
 import { loginGuard } from './guards/login-guard';
+import { Chat } from './chat/chat';
 
 export const routes: Routes = [
+    {
+        path: "chat",
+        component: Chat
+    },
     {
         path: "register",
         loadComponent: () => import('./register/register').then((x) => x.Register),
@@ -12,5 +17,10 @@ export const routes: Routes = [
         path: 'login',
         loadComponent: () => import('./login/login').then((x) => Login),
         canActivate: [loginGuard]
+    },
+    {
+        path: '**',
+        redirectTo: 'chat',
+        pathMatch: 'full'
     }
 ];
