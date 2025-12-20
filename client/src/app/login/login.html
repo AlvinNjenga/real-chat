@@ -40,8 +40,11 @@
             </mat-form-field>
 
             <button type="submit" [disabled]="!userForm.valid" class="w-full mb 5 bg-blue-900 text-white rounded-md p-2 hover:cursor-pointer disabled:opacity-50">
-                Register
+                Login
             </button>
+            <p class="font-bold text-xs text-center mt-2">
+                Don't have an account? <a class="text-blue-500" [routerLink]="'/register'">Register</a>
+            </p>
         </div>
     </div>
 </form>

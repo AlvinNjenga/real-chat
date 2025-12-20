@@ -2,11 +2,13 @@ import { Routes } from '@angular/router';
 import { Login } from './login/login';
 import { loginGuard } from './guards/login-guard';
 import { Chat } from './chat/chat';
+import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
     {
         path: "chat",
-        component: Chat
+        component: Chat,
+        canActivate: [authGuard]
     },
     {
         path: "register",

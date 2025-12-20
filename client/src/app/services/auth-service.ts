@@ -7,6 +7,9 @@ import { User } from '../models/user';
 @Injectable({
   providedIn: 'root',
 })
+
+// TODO: Potentially hold currentUser here and update like 
+// ChatService & online users?
 export class AuthService {
   private baseUrl = "http://localhost:5000/api/account";
   private token = "token";
@@ -54,5 +57,15 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return !!localStorage.getItem(this.token);
+  }
+
+  logout() {
+    localStorage.removeItem(this.token);
+    localStorage.removeItem('user');
+  }
+
+  get currentLoggedUser(): User | null {
+    const user: User = JSON.parse(localStorage.getItem('user') || '{}');
+    return user;
   }
 }

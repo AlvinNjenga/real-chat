@@ -2,10 +2,10 @@
     <div class="flex items-center justify-between bg-white z-10 sticky top-0 p-1 w-full">
         <div class="flex items-center">
             <img class="h-10 w-10 rounded-full border-gray-100 border-2 object-cover"
-                src="https://randomuser.me/api/portraits/women/13.jpg" alt=""Profile Picture />
+                src={{authService.currentLoggedUser?.profileImage}} alt="Profile Picture" />
 
             <div class="ml-2 text-gray-500 font-bold">
-                Joe Joestar
+                {{authService.currentLoggedUser?.fullName | titlecase}}
             </div>
         </div>
         <div>
@@ -13,7 +13,7 @@
                 <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-                <button mat-menu-item>
+                <button (click)="logout()" mat-menu-item>
                     <mat-icon>logout</mat-icon>
                     <span>Logout</span>
                 </button>
@@ -29,13 +29,24 @@
         </mat-icon>
     </div>
     <div class="py-1 overflow-y-auto scroll-smooth">
-        @for (item of [1,2,3,4,5,6,7,8,9,10]; track item) {
-            <div class="flex items-center gap-2 py-2">
-                <img src="https://randomuser.me/api/portraits/men/{{item}}.jpg" class="h-10 w-10 rounded-full" alt="Profile Image" />
+        @for (user of chatService.onlineUsers(); track user) {
+            <div class="flex items-center gap-2 py-2 hover:bg-slate-100 cursor-pointer border-b hover:rounded-md border-gray-100 px-3">
+                <img [src]="user.profilePicture || `https://randomuser.me/api/portraits/lego/${$index}.jpg`" class="h-10 w-10 rounded-full" alt="Profile Image" />
                 <div>
-                    <span class="text-base text-gray-600 font-normal">John Doe</span>
-                    <p class="text-xs text-slate-400">3 new messsages</p>
+                    <span class="text-base text-gray-600 font-normal">
+                        {{user!.fullName | titlecase}}
+                    </span>
+                    <p class="text-xs text-slate-400">
+                        {{user.unreadCount ? user.unreadCount + 'new message' : ''}}
+                    </p>
                 </div>
+                @if(user.isOnline) {
+                    <div class="ml-auto font-medium text-xs">
+                        <div class="bg-green-700 w-2 h-2 rounded-full"></div>
+                    </div>
+                } @else {
+                    <div class="bg-green-100 w-2 h-2 rounded-full"></div>
+                }
             </div>
         }
     </div>
