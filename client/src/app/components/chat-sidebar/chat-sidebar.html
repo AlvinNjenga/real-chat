@@ -30,7 +30,10 @@
     </div>
     <div class="py-1 overflow-y-auto scroll-smooth">
         @for (user of chatService.onlineUsers(); track user) {
-            <div class="flex items-center gap-2 py-2 hover:bg-slate-100 cursor-pointer border-b hover:rounded-md border-gray-100 px-3">
+            <div 
+                class="flex items-center gap-2 py-2 hover:bg-slate-100 cursor-pointer border-b hover:rounded-md border-gray-100 px-3"
+                (click)="openChatWindow(user)"
+            >
                 <img [src]="user.profilePicture || `https://randomuser.me/api/portraits/lego/${$index}.jpg`" class="h-10 w-10 rounded-full" alt="Profile Image" />
                 <div>
                     <span class="text-base text-gray-600 font-normal">
@@ -45,7 +48,7 @@
                         <div class="bg-green-700 w-2 h-2 rounded-full"></div>
                     </div>
                 } @else {
-                    <div class="bg-green-100 w-2 h-2 rounded-full"></div>
+                    <div class="ml-auto bg-green-100 w-2 h-2 rounded-full"></div>
                 }
             </div>
         }

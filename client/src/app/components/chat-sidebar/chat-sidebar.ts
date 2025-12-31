@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth-service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ChatService } from '../../services/chat-service';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-chat-sidebar',
@@ -25,5 +26,10 @@ export class ChatSidebar implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+    this.chatService.disconnectConnection();
+  }
+
+  openChatWindow(user: User) { 
+    this.chatService.currentOpenedChat.set(user);
   }
 }
