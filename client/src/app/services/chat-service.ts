@@ -11,27 +11,8 @@ export class ChatService {
   private authService = inject(AuthService);
   private hubUrl = "http://localhost:5000/hubs/chat";
 
-  messageDummy: Message = {
-    id: 123,
-    senderId: "JACK",
-    receiverId: "MY_ID",
-    content: "This is a test message",
-    createdDate: "1995-05-01",
-    isRead: false
-  }
-
-  userMessageDummy: Message = {
-    id: 2,
-    senderId: "fb0bfe2d-c495-4de3-a8fb-138061721025",
-    receiverId: "YOU",
-    content: "I sent this!",
-    createdDate: "1995-05-01",
-    isRead: false
-  }
-
   onlineUsers = signal<User[]>([]);
   currentOpenedChat = signal<User | null>(null);
-  // chatMessages = signal<Message[]>([this.messageDummy, this.userMessageDummy]);
   chatMessages = signal<Message[]>([]) 
   isLoading = signal<boolean>(false);
 
@@ -53,12 +34,48 @@ export class ChatService {
       .catch((error) => {
         console.log('Connection or login error', error)
       });
+    
+    // TODO: Check if this is working.
+    this.hubConnection!.on('Notify', (user: User) => {
+      Notification.requestPermission().then((result) => {
+        if (result == 'granted') {
+          new Notification('Active now', {
+            body: user.fullName + ' is online now',
+            icon: user.profileImage
+          });
+        }
+      });
+    });
 
     this.hubConnection!.on('OnlineUsers', (users:User[]) => {
       this.onlineUsers.update(() =>
         users.filter(user => user.userName !== this.authService.currentLoggedUser!.userName)
       )
     });
+
+    this.hubConnection!.on('NotifyTypingToUser', (senderUserName) => {
+      this.onlineUsers.update(users => 
+        users.map((user) => {
+          if (user.userName === senderUserName) {
+            user.isTyping = true;
+          }
+
+          return user;
+        })
+      )
+
+      setTimeout(() => (
+        this.onlineUsers.update((users) => 
+          users.map((user) => {
+            if (user.userName === senderUserName) {
+              user.isTyping = false;
+            }
+
+            return user;
+          })
+        )
+      ), 3000);
+    })
 
     this.hubConnection!.on("ReceiveMessageList", (messages) => {
       this.chatMessages.update(existingMessages => [...messages, ...existingMessages]);
@@ -129,5 +146,11 @@ export class ChatService {
       .finally(() => {
         this.isLoading.update(() => false);
       })
+  }
+
+  notifyTyping() {
+    this.hubConnection!.invoke('NotifyTyping', this.currentOpenedChat()?.userName)
+      .then((x) => console.log(x))
+      .catch((error: Error) => console.log(error.message));
   }
 }

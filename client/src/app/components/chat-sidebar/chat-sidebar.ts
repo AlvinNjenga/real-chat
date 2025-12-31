@@ -7,10 +7,11 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ChatService } from '../../services/chat-service';
 import { User } from '../../models/user';
+import { TypingIndicator } from "../typing-indicator/typing-indicator";
 
 @Component({
   selector: 'app-chat-sidebar',
-  imports: [MatButtonModule, MatIconModule, MatMenuModule, CommonModule],
+  imports: [MatButtonModule, MatIconModule, MatMenuModule, CommonModule, TypingIndicator],
   templateUrl: './chat-sidebar.html',
   styles: ``,
 })
@@ -30,8 +31,8 @@ export class ChatSidebar implements OnInit {
   }
 
   openChatWindow(user: User) {
-    console.log("openChatWindow fired");
     this.chatService.currentOpenedChat.set(user);
+    this.chatService.chatMessages.update(() => []);
     this.chatService.loadMessages();
   }
 }

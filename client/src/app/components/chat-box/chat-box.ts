@@ -11,7 +11,6 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './chat-box.html',
   styles: [`
         .chat-box {
-          scroll-behaviour: smooth;
           overflow: hidden;
           overflow-y: scroll;
           padding: 10px;

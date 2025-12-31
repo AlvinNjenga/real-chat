@@ -14,10 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(
     options =>
     {
-        options.AddDefaultPolicy(builder =>
+        options.AddPolicy("AllowLocalDev", policy =>
         {
-            builder.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
-                .WithOrigins("http://localhost:4200", "https://localhost:4200");
+            policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
+                .AllowAnyHeader().AllowAnyMethod().AllowCredentials();
         });
     }
 );
@@ -80,8 +80,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
-    .WithOrigins("http://localhost:4200", "https://localhost:4200"));
+app.UseCors("AllowLocalDev");
 
 // app.UseHttpsRedirection();
 app.UseAuthentication();

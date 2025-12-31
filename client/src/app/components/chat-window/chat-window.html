@@ -22,6 +22,7 @@
         <div class="absolute flex items-center bottom-0 border-r w-full bg-white p-4">
             <input 
                 type="text"
+                (input)="chatService.notifyTyping()"
                 (keyup.enter)="sendMessage()"
                 [(ngModel)]="message" 
                 class="w-full bg-gray-200 focus:outline-none text-gray-900 rounded-full px-6 p-2"
