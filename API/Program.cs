@@ -16,8 +16,8 @@ builder.Services.AddCors(
     {
         options.AddDefaultPolicy(builder =>
         {
-            builder.WithOrigins("http://localhost:4200", "https://localhost:4200")
-                .AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+            builder.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
+                .WithOrigins("http://localhost:4200", "https://localhost:4200");
         });
     }
 );
@@ -81,7 +81,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
-.WithOrigins("http://localhost:4200", "https://localhost:4200"));
+    .WithOrigins("http://localhost:4200", "https://localhost:4200"));
 
 // app.UseHttpsRedirection();
 app.UseAuthentication();

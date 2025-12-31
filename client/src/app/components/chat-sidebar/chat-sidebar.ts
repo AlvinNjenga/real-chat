@@ -29,7 +29,9 @@ export class ChatSidebar implements OnInit {
     this.chatService.disconnectConnection();
   }
 
-  openChatWindow(user: User) { 
+  openChatWindow(user: User) {
+    console.log("openChatWindow fired");
     this.chatService.currentOpenedChat.set(user);
+    this.chatService.loadMessages();
   }
 }

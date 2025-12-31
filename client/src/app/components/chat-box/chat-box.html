@@ -32,7 +32,7 @@
                             {{message.content}}
                         </span>
 
-                        <span>
+                        <span class="text-left text-gray-500! text-[10px] block">
                             {{message.createdDate | date:'short' }}
                         </span>
                     </div>
@@ -44,7 +44,7 @@
                             {{message.content}}
                         </span>
 
-                        <span class="text-right text-gray-200 text-[10px] block mt-1">
+                        <span class="text-right text-gray-200 text-[10px] block">
                             {{message.createdDate | date:'short'}}
                         </span>
                     </div>
@@ -52,8 +52,8 @@
                         bg-linear-to-r from-blue-500 to-purple-500 shrink-0"
                     >
                         <img
-                            [src]="chatService.currentOpenedChat()?.profilePicture"
-                            [alt]="chatService.currentOpenedChat()?.fullName"
+                            [src]="authService.currentLoggedUser?.profileImage"
+                            [alt]="authService.currentLoggedUser?.fullName"
                             class="rounded-full h-8 w-8"
                         />
                     </div>
@@ -65,7 +65,7 @@
                         <mat-spinner diameter="40" strokeWidth="3"></mat-spinner>
                     } @else {
                         
-                        <mat-icon class="text-gray-400! chat-icon scale-150 mb-4">
+                        <mat-icon class="text-gray-400! chat-icon mb-4">
                             chat
                         </mat-icon>
                         

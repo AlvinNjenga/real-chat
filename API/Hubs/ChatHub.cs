@@ -86,12 +86,12 @@ public class ChatHub(UserManager<AppUser> userManager, AppDbContext context) : H
                 msg.IsRead = true;
                 await context.SaveChangesAsync();
             }
-
-            await Clients.User(currentUser.Id).SendAsync("ReceiveMessageList", messages);
         }
+            
+        await Clients.User(currentUser.Id).SendAsync("ReceiveMessageList", messages);
     }
 
-    public async Task SendMesssage(MessageRequestDto message)
+    public async Task SendMessage(MessageRequestDto message)
     {
         var senderId = Context.User!.Identity!.Name;
         var recipientId = message.ReceiverId;

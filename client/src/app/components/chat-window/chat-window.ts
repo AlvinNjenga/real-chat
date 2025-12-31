@@ -13,10 +13,11 @@ import { ChatBox } from "../chat-box/chat-box";
 })
 export class ChatWindow {
   chatService = inject(ChatService);
-  message: String = '';
+  message: string = '';
 
-  sendMessage() {
-    console.log(this.message);
+  sendMessage() { 
+    if (!this.message) return;
+    this.chatService.sendMessage(this.message);
     this.message = '';
   }
 }

@@ -37,6 +37,8 @@ export class ChatService {
 
   private hubConnection?: HubConnection;
 
+  // Inside start connection is where you listen for messages
+  // e.g. OnlineUsers and ReceiveMessageList etc
   startConnection(token: string, senderId?: string) {
     this.hubConnection = new HubConnectionBuilder().withUrl(
       `${this.hubUrl}?senderId=${senderId} || ''}`, {
@@ -53,22 +55,50 @@ export class ChatService {
       });
 
     this.hubConnection!.on('OnlineUsers', (users:User[]) => {
-      console.log(users);
       this.onlineUsers.update(() =>
         users.filter(user => user.userName !== this.authService.currentLoggedUser!.userName)
       )
     });
 
-    this.hubConnection!.on("ReceiveMessageList", (message) => {
-      this.chatMessages.update(messages => [...message, messages]);
+    this.hubConnection!.on("ReceiveMessageList", (messages) => {
+      this.chatMessages.update(existingMessages => [...messages, ...existingMessages]);
       this.isLoading.update(() => false);
-    })
+    });
+
+    this.hubConnection!.on("ReceiveNewMessage", (message: Message) => {
+      document.title = "New Message";
+
+      this.chatMessages.update((messages) => [...messages, message])
+    });
   }
 
   disconnectConnection() {
     if (this.hubConnection?.state === HubConnectionState.Connected) {
       this.hubConnection.stop().catch(err => console.log(err));
     }
+  }
+
+  sendMessage(message: string) {
+    this.chatMessages.update(messages => [
+      ...messages,
+      {
+        content: message,
+        senderId: this.authService.currentLoggedUser?.id!,
+        receiverId: this.currentOpenedChat()?.id!,
+        createdDate: new Date().toString(),
+        isRead: false,
+        id: 0
+      }
+    ]);
+
+    this.hubConnection?.invoke("SendMessage", {
+      receiverId: this.currentOpenedChat()?.id,
+      content: message
+    }).then((id) => {
+      console.log("message send to: ", id);
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
   status(username: string): string {
@@ -90,5 +120,14 @@ export class ChatService {
     );
 
     return onlineUser?.isOnline ? 'online' : this.currentOpenedChat()!.userName;
+  }
+
+  loadMessages(pageNumber: number = 1) {
+    this.hubConnection?.invoke("LoadMessages", this.currentOpenedChat()?.id, pageNumber)
+      .then()
+      .catch()
+      .finally(() => {
+        this.isLoading.update(() => false);
+      })
   }
 }
