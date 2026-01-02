@@ -82,7 +82,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowLocalDev");
 
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();

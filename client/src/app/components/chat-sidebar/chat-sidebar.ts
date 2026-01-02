@@ -33,6 +33,7 @@ export class ChatSidebar implements OnInit {
   openChatWindow(user: User) {
     this.chatService.currentOpenedChat.set(user);
     this.chatService.chatMessages.update(() => []);
+    this.chatService.nextPage = 2;
     this.chatService.loadMessages();
   }
 }

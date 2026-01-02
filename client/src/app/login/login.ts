@@ -30,7 +30,7 @@ export class Login {
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
         this.authService.me().subscribe();
-        this.snackBar.open('Logged in successfully', 'Close');
+        this.snackBar.open('Logged in successfully', 'Close', { duration: 1000 });
       },
       error: (error: HttpErrorResponse) => {
         let err = error.error as ApiResponse<string>;

@@ -11,7 +11,7 @@ import { User } from '../models/user';
 // TODO: Potentially hold currentUser here and update like 
 // ChatService & online users?
 export class AuthService {
-  private baseUrl = "http://localhost:5000/api/account";
+  private baseUrl = "https://localhost:5000/api/account";
   private token = "token";
 
   private httpClient = inject(HttpClient);

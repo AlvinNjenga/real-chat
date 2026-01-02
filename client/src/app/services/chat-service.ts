@@ -9,20 +9,36 @@ import { Message } from '../models/message';
 })
 export class ChatService {
   private authService = inject(AuthService);
-  private hubUrl = "http://localhost:5000/hubs/chat";
+  private hubUrl = "https://localhost:5000/hubs/chat";
 
   onlineUsers = signal<User[]>([]);
   currentOpenedChat = signal<User | null>(null);
   chatMessages = signal<Message[]>([]) 
   isLoading = signal<boolean>(false);
+  nextPage = 2;
+
+  autoScrollEnabled = signal<boolean>(true);
 
   private hubConnection?: HubConnection;
 
   // Inside start connection is where you listen for messages
   // e.g. OnlineUsers and ReceiveMessageList etc
   startConnection(token: string, senderId?: string) {
+    if (this.hubConnection?.state !== HubConnectionState.Disconnected) {
+      console.log('SignalR is already connected or connecting');
+      return;
+    }
+
+    if(this.hubConnection) {
+      this.hubConnection.off('ReceiveNewMessage');
+      this.hubConnection.off('ReceiveMessageList');
+      this.hubConnection.off('NotifyTypingToUser');
+      this.hubConnection.off('OnlineUsers');
+      this.hubConnection.off('Notify');
+    }
+
     this.hubConnection = new HubConnectionBuilder().withUrl(
-      `${this.hubUrl}?senderId=${senderId} || ''}`, {
+      `${this.hubUrl}?senderId=${senderId ?? ''}`, {
         accessTokenFactory: () => token
       }).withAutomaticReconnect().build();
 
@@ -75,14 +91,17 @@ export class ChatService {
           })
         )
       ), 3000);
-    })
+    });
 
-    this.hubConnection!.on("ReceiveMessageList", (messages) => {
+    this.hubConnection!.on("ReceiveMessageList", (messages: Message[]) => {
+      console.log("Messages from backend: ", messages);
+      this.isLoading.update(() => true);
       this.chatMessages.update(existingMessages => [...messages, ...existingMessages]);
       this.isLoading.update(() => false);
     });
 
     this.hubConnection!.on("ReceiveNewMessage", (message: Message) => {
+      let audio = new Audio('assets/notification.mp3');
       document.title = "New Message";
 
       this.chatMessages.update((messages) => [...messages, message])
@@ -92,6 +111,7 @@ export class ChatService {
   disconnectConnection() {
     if (this.hubConnection?.state === HubConnectionState.Connected) {
       this.hubConnection.stop().catch(err => console.log(err));
+      this.hubConnection = undefined;
     }
   }
 
@@ -139,13 +159,21 @@ export class ChatService {
     return onlineUser?.isOnline ? 'online' : this.currentOpenedChat()!.userName;
   }
 
+  // TODO: Implement page + 1 method for checking if more.
   loadMessages(pageNumber: number = 1) {
+    console.log("Page number: ", pageNumber);
+    this.isLoading.update(() => true);
     this.hubConnection?.invoke("LoadMessages", this.currentOpenedChat()?.id, pageNumber)
       .then()
       .catch()
       .finally(() => {
         this.isLoading.update(() => false);
       })
+  }
+
+  loadMoreMessages() {
+    this.loadMessages(this.nextPage);
+    this.nextPage++;
   }
 
   notifyTyping() {

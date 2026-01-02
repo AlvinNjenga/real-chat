@@ -52,7 +52,8 @@ public class ChatHub(UserManager<AppUser> userManager, AppDbContext context) : H
 
     public async Task LoadMessages(string recipientId, int pageNumber = 1)
     {
-        int pageSize = 10;
+        // TODO: Put back up to 10 pages.
+        int pageSize = 5;
         var username = Context.User!.Identity!.Name;
         var currentUser = await userManager.FindByNameAsync(username!);
 
@@ -61,6 +62,7 @@ public class ChatHub(UserManager<AppUser> userManager, AppDbContext context) : H
             return;
         }
 
+        // TODO: Implement page + 1 method for checking if more.
         List<MessageResponseDto> messages = await context.Messages
             .Where(x=>x.ReceiverId == currentUser!.Id && x.SenderId == recipientId || 
             x.SenderId == currentUser!.Id && x.ReceiverId == recipientId)

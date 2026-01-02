@@ -2,7 +2,7 @@
     <div class="relative w-full bg-[#dfe7f1] h-full">
         <div class="chat-header flex justify-between items-center border-b w-full bg-white p-4">
             <div>
-                <span class="font-bold leading-normal">
+                <span class="font-extrabold leading-normal text-black text-2xl">
                     {{chatService.currentOpenedChat()?.fullName | titlecase }}
                 </span>
                 <br />
@@ -11,7 +11,7 @@
                 </span>
             </div>
             <div>
-                <mat-icon class="cursor-pointer hover:text-red-500">
+                <mat-icon class="cursor-pointer text-black! hover:text-red-500">
                     video_call
                 </mat-icon>
             </div>
@@ -34,7 +34,7 @@
         </div>
     </div>
 } @else {
-    <div class="flex flex-col items-center justify-center h-full p-7">
+    <div class="flex flex-col items-center justify-center md:h-full p-7">
         <img src="chatopen.svg" />
     </div>
 }
