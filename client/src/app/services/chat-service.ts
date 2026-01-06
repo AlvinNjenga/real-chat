@@ -24,7 +24,8 @@ export class ChatService {
   // Inside start connection is where you listen for messages
   // e.g. OnlineUsers and ReceiveMessageList etc
   startConnection(token: string, senderId?: string) {
-    if (this.hubConnection?.state !== HubConnectionState.Disconnected) {
+    if (this.hubConnection && this.hubConnection?.state !== HubConnectionState.Disconnected) {
+      console.log(this.hubConnection?.state);
       console.log('SignalR is already connected or connecting');
       return;
     }

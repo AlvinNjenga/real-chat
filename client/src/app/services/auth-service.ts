@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { ApiResponse } from '../models/api-response';
 import { User } from '../models/user';
@@ -13,7 +13,7 @@ import { User } from '../models/user';
 export class AuthService {
   private baseUrl = "https://localhost:5000/api/account";
   private token = "token";
-
+  isLoading = signal(false);
   private httpClient = inject(HttpClient);
 
   register(data: FormData): Observable<ApiResponse<string>> {
