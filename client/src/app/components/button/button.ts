@@ -10,6 +10,7 @@ export class Button {
   isDisabled = input<boolean>();
   isLoading = input<boolean>();
   action = output<void>();
+  text = input.required<string>();
 
   clickHandler() {
     this.action.emit();

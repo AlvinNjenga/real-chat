@@ -63,15 +63,18 @@
             </mat-form-field>
 
             <input hidden (change)="onFileSelected($event)" type="file" #pic placeholder="Profile Image" />
-                <button mat-raised-button (click)="pic.click()" type="button" class="w-full flex items-center gap-2 
-                    justify-center mb-5 bg-red-900 text-white rounded-md p-2d">
-                    <mat-icon>add_a_photo</mat-icon>
-                    <span>Upload Image</span>
-                </button>
-
-            <button type="submit" [disabled]="!userForm.valid" class="w-full mb 5 bg-blue-900 text-white rounded-md p-2 hover:cursor-pointer disabled:opacity-50">
-                Register
+            <button mat-raised-button (click)="pic.click()" type="button" class="w-full flex items-center gap-2 
+                justify-center mb-5 bg-red-900 text-white rounded-md p-2d">
+                <mat-icon>add_a_photo</mat-icon>
+                <span>Upload Image</span>
             </button>
+
+            <app-button
+                [text]="'Register'"
+                [isDisabled]="!userForm.valid"
+                (action)="register()"
+                [isLoading]="authService.isLoading()"
+            />
             <p class="font-bold text-xs text-center mt-2">
                 Already have an account? <a class="text-blue-500" [routerLink]="'/login'">Log In</a>
             </p>

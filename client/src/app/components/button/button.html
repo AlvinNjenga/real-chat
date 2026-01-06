@@ -8,5 +8,9 @@
         <div class="w-4 h-4 border-2 mr-2 border-white border-t-transparent rounded-full inline-block animate-spin"></div>
     }
 
-    Login
+    @if(isLoading()) {
+        <span>Processing...</span>
+    } @else {
+        <span>{{ text() }}</span>
+    }
 </button>
