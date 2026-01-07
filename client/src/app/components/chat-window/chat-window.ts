@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { ChatBox } from "../chat-box/chat-box";
+import { VideoChatService } from '../../services/video-chat-service';
+import { MatDialog } from '@angular/material/dialog';
+import { VideoChat } from '../../video-chat/video-chat';
 
 @Component({
   selector: 'app-chat-window',
@@ -13,8 +16,10 @@ import { ChatBox } from "../chat-box/chat-box";
 })
 export class ChatWindow {
   @ViewChild('chatBox') chatContainer?: ElementRef;
+  dialog = inject(MatDialog);
 
   chatService = inject(ChatService);
+  signalRService = inject(VideoChatService);
   message: string = '';
 
   // TODO: Change to scroll to bottom when message sent.
@@ -22,6 +27,17 @@ export class ChatWindow {
     if (!this.message) return;
     this.chatService.sendMessage(this.message);
     this.message = '';
+  }
+
+  displayDialog(receiverId: string) {
+    this.signalRService.remoteUserId = receiverId;
+
+    this.dialog.open(VideoChat, {
+      width: "400px",
+      height: "600px",
+      disableClose: true,
+      autoFocus: false
+    });
   }
 
   // TODO: Fix this.
